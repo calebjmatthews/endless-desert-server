@@ -1,9 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const dbh = require('./db_handler').dbh;
 
-const tableNames = ['vault', 'research_status', 'rates', 'buildings',
-  'research_option_decks', 'timers', 'trading_status'];
+const dataUpsert = require('./db/data_upsert').dataUpsert;
 
 module.exports = function(app) {
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,15 +19,8 @@ module.exports = function(app) {
   });
 
   app.post('/api/storage/:user_id', (req, res) => {
-    let queryPromises = [];
-    tableNames.map((tableName) => {
-      queryPromises.push(dbh.pool.query({
-        sql: ('INSERT INTO `' + tableName + '`(`user_id`, `value`) VALUES (?, ?)'),
-        values: [5, JSON.stringify(req.body[tableName])]
-      }));
-    });
-    return Promise.all(queryPromises)
-    .then((results) => {
+    dataUpsert(req.body)
+    .then(() => {
       res.sendStatus(200);
     })
     .catch((err) => {
@@ -39,7 +30,6 @@ module.exports = function(app) {
   });
 
   app.all('/*', (req, res) => {
-    console.log('route hit at /*');
     res.send('This is the Endless Desert server. There\'s nothing to see here.');
   });
 }
