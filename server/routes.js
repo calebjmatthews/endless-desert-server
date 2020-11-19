@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const dataUpsert = require('./db/data_upsert').dataUpsert;
+const dataGet = require('./db/data_get').dataGet;
 
 module.exports = function(app) {
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,7 +16,14 @@ module.exports = function(app) {
 });
 
   app.get('/api/storage/:user_id', (req, res) => {
-    console.log('route hit at /api/storage/:user_id');
+    dataGet(req.params.user_id)
+    .then((dataMap) => {
+      res.send(JSON.stringify({data: dataMap}));
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
   });
 
   app.post('/api/storage/:user_id', (req, res) => {
