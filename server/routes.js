@@ -27,7 +27,7 @@ module.exports = function(app) {
   });
 
   app.post('/api/storage/:user_id', (req, res) => {
-    dataUpsert(req.body)
+    dataUpsert(req.body, req.params.user_id)
     .then(() => {
       res.sendStatus(200);
     })

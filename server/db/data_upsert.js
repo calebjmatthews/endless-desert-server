@@ -2,13 +2,13 @@ const dbh = require('../db_handler').dbh;
 
 const TABLE_NAMES = require('../constants').TABLE_NAMES;
 
-function dataUpsert(body) {
+function dataUpsert(body, userId) {
   let selPromises = [];
   let existsMap = {};
   TABLE_NAMES.map((tableName) => {
     selPromises.push(dbh.pool.query({
       sql: ('SELECT `id` FROM `' + tableName + '` WHERE `user_id` = ?'),
-      values: [5]
+      values: [userId]
     }));
   })
   return Promise.all(selPromises)
@@ -24,13 +24,13 @@ function dataUpsert(body) {
         upsPromises.push(dbh.pool.query({
           sql: ('UPDATE `' + tableName + '` SET `value` = ?, '
             + '`timestamp` = CURRENT_TIMESTAMP() WHERE `user_id`=?'),
-          values: [JSON.stringify(body[tableName]), 5]
+          values: [JSON.stringify(body[tableName]), userId]
         }));
       }
       else {
         upsPromises.push(dbh.pool.query({
           sql: ('INSERT INTO `' + tableName + '`(`user_id`, `value`) VALUES (?, ?)'),
-          values: [5, JSON.stringify(body[tableName])]
+          values: [userId, JSON.stringify(body[tableName])]
         }));
       }
     });

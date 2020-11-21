@@ -7,7 +7,7 @@ function dataGet(userId) {
   TABLE_NAMES.map((tableName) => {
     selPromises.push(dbh.pool.query({
       sql: ('SELECT `value` FROM `' + tableName + '` WHERE `user_id` = ?'),
-      values: [5]
+      values: [userId]
     }));
   });
   return Promise.all(selPromises)
