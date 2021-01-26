@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 const dataUpsert = require('./db/data_upsert').dataUpsert;
 const dataGet = require('./db/data_get').dataGet;
+const userCreate = require('./db/user_create').userCreate;
 
 module.exports = function(app) {
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,6 +37,18 @@ module.exports = function(app) {
       res.sendStatus(500);
     });
   });
+
+  app.post('/api/user', (req, res) => {
+    const userReq = JSON.parse(req.body.userReq);
+    userCreate(userReq)
+    .then((ucRes) => {
+      res.send(JSON.stringify(ucRes));
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+  })
 
   app.all('/*', (req, res) => {
     res.send('This is the Endless Desert server. There\'s nothing to see here.');

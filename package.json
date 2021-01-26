@@ -12,7 +12,9 @@
     "express": "^4.17.1",
     "promise-mysql": "^5.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "bcrypt": "^5.0.0"
+  },
   "engines": {
     "node": ">=12.16.2"
   }
