@@ -4,9 +4,9 @@ class Utils {
     this.random = this.mulberry32(seedFunction());
   }
 
-  random: Function;
+  random;
 
-  hash(seed: string) {
+  hash(seed) {
     for(var i = 0, h = 1779033703 ^ seed.length; i < seed.length; i++)
         h = Math.imul(h ^ seed.charCodeAt(i), 3432918353),
         h = h << 13 | h >>> 19;
@@ -17,7 +17,7 @@ class Utils {
     }
   }
 
-  mulberry32(a: number) {
+  mulberry32(a) {
     return function() {
       var t = a += 0x6D2B79F5;
       t = Math.imul(t ^ t >>> 15, t | 1);
@@ -26,7 +26,7 @@ class Utils {
     }
   }
 
-  randHex(len: number) {
+  randHex(len) {
     let maxlen = 8;
     let min = Math.pow(16,Math.min(len,maxlen)-1);
     let max = Math.pow(16,Math.min(len,maxlen)) - 1;
@@ -38,7 +38,7 @@ class Utils {
     return r;
   }
 
-  isEmpty(aValue: any) {
+  isEmpty(aValue) {
     if (aValue == 0) { return false; }
     if (aValue) {
       if (typeof aValue == 'string') {
@@ -54,7 +54,7 @@ class Utils {
     return true;
   }
 
-  arrayIncludes(anArray: any[], anItem: any, anId: any = null) {
+  arrayIncludes(anArray, anItem, anId = null) {
     let included = false;
     if (anId != null) {
       anArray.map((aMember) => {
@@ -73,9 +73,9 @@ class Utils {
     return included;
   }
 
-  randomWeightedSelect(anArray: any[], weightName: string = 'weight') {
+  randomWeightedSelect(anArray, weightName = 'weight') {
     let weightSum = 0;
-    let buckets: number[] = [];
+    let buckets = [];
     anArray.map((aMember, index) => {
       weightSum += aMember[weightName];
       buckets.push(weightSum);

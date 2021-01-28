@@ -39,10 +39,9 @@ module.exports = function(app) {
   });
 
   app.post('/api/user', (req, res) => {
-    const userReq = JSON.parse(req.body.userReq);
-    userCreate(userReq)
+    userCreate(req.body.userReq)
     .then((ucRes) => {
-      res.send(JSON.stringify(ucRes));
+      res.send(JSON.stringify({data: ucRes}));
     })
     .catch((err) => {
       console.error(err);
