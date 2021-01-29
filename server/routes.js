@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const dataUpsert = require('./db/data_upsert').dataUpsert;
 const dataGet = require('./db/data_get').dataGet;
 const userCreate = require('./db/user_create').userCreate;
+const userLogin = require('./db/user_login').userLogin;
 
 module.exports = function(app) {
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,10 +39,21 @@ module.exports = function(app) {
     });
   });
 
-  app.post('/api/user', (req, res) => {
+  app.post('/api/signup', (req, res) => {
     userCreate(req.body.userReq)
-    .then((ucRes) => {
-      res.send(JSON.stringify({data: ucRes}));
+    .then((usRes) => {
+      res.send(JSON.stringify({data: usRes}));
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+  })
+
+  app.post('/api/login', (req, res) => {
+    userLogin(req.body.userReq)
+    .then((ulRes) => {
+      res.send(JSON.stringify({data: ulRes}));
     })
     .catch((err) => {
       console.error(err);
