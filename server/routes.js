@@ -1,25 +1,30 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const authenticateSession = require('./auth_session').authenticateSession;
 const dataUpsert = require('./db/data_upsert').dataUpsert;
 const dataGet = require('./db/data_get').dataGet;
 const userCreate = require('./db/user_create').userCreate;
 const userLogin = require('./db/user_login').userLogin;
+const sessionCheckAndRefresh =
+  require('./db/session_check_refresh').sessionCheckAndRefresh;
 
 module.exports = function(app) {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
   app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:19006");
-  res.header("Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+    res.header("Access-Control-Allow-Origin", "http://localhost:19006");
+    res.header("Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
-  app.get('/api/storage/:user_id', (req, res) => {
-    dataGet(req.params.user_id)
+  app.post('/api/storage_get', (req, res) => {
+    dataGet(req.body.userId)
     .then((dataMap) => {
+      console.log('dataMap');
+      console.log(dataMap);
       res.send(JSON.stringify({data: dataMap}));
     })
     .catch((err) => {
@@ -28,8 +33,8 @@ module.exports = function(app) {
     });
   });
 
-  app.post('/api/storage/:user_id', (req, res) => {
-    dataUpsert(req.body, req.params.user_id)
+  app.post('/api/storage_upsert', (req, res) => {
+    dataUpsert(req.body, req.body.userId)
     .then(() => {
       res.sendStatus(200);
     })
@@ -52,6 +57,17 @@ module.exports = function(app) {
 
   app.post('/api/login', (req, res) => {
     userLogin(req.body.userReq)
+    .then((ulRes) => {
+      res.send(JSON.stringify({data: ulRes}));
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+  })
+
+  app.post('/api/session_check', (req, res) => {
+    sessionCheckAndRefresh(req.body.sessionId, req.body.userId)
     .then((ulRes) => {
       res.send(JSON.stringify({data: ulRes}));
     })

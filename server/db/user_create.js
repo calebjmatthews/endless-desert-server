@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const dbh = require('../db_handler').dbh;
 const utils = require('../utils').utils;
 
+const sessionCreate = require('./session_create').sessionCreate;
+
 function userCreate(userReq) {
   let userId = '';
   if (!userReq.email) {
@@ -39,10 +41,15 @@ function userCreate(userReq) {
   })
   .then((secondRes) => {
     if (secondRes.succeeded == false) { return secondRes; }
-    return { succeeded: true, userId: userId, message: ('New account successfully '
-      + 'created.') };
+    return sessionCreate(userId);
+  })
+  .then((sessionRes) => {
+    if (sessionRes.succeeded == false) { return sessionRes; }
+    return { succeeded: true, userId: userId, sessionId: sessionRes.id,
+      message: ('New account successfully created.') };
   })
   .catch((err) => {
+    console.error(err);
     return { succeeded: false, message: err };
   });
 }
