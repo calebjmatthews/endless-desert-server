@@ -20,11 +20,9 @@ module.exports = function(app) {
     next();
   });
 
-  app.post('/api/storage_get', (req, res) => {
+  app.post('/api/storage_get', authenticateSession, (req, res) => {
     dataGet(req.body.userId)
     .then((dataMap) => {
-      console.log('dataMap');
-      console.log(dataMap);
       res.send(JSON.stringify({data: dataMap}));
     })
     .catch((err) => {
@@ -33,7 +31,7 @@ module.exports = function(app) {
     });
   });
 
-  app.post('/api/storage_upsert', (req, res) => {
+  app.post('/api/storage_upsert', authenticateSession, (req, res) => {
     dataUpsert(req.body, req.body.userId)
     .then(() => {
       res.sendStatus(200);
