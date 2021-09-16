@@ -8,8 +8,8 @@ function userLogin(userReq) {
   let user = null;
 
   return dbh.pool.query({
-    sql: 'SELECT * FROM `users` WHERE `email` = ?',
-    values: [userReq.email]
+    sql: 'SELECT * FROM `users` WHERE `email` LIKE ?',
+    values: [`%${userReq.email}%`]
   })
   .then((userRes) => {
     if (userRes.length == 0) {
