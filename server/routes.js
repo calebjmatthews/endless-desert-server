@@ -8,6 +8,7 @@ const userCreate = require('./db/user_create').userCreate;
 const userLogin = require('./db/user_login').userLogin;
 const sessionCheckAndRefresh =
   require('./db/session_check_refresh').sessionCheckAndRefresh;
+const deleteAllForUser = require('./db/delete_all_for_user').deleteAllForUser;
 
 module.exports = function(app) {
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -68,6 +69,18 @@ module.exports = function(app) {
     sessionCheckAndRefresh(req.body.sessionId, req.body.userId)
     .then((ulRes) => {
       res.send(JSON.stringify({data: ulRes}));
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+  })
+
+  // Debug routes
+  app.post('/api/delete_all_for_user', (req, res) => {
+    deleteAllForUser(req.body.email)
+    .then((dafuRes) => {
+      res.send(dafuRes);
     })
     .catch((err) => {
       console.error(err);

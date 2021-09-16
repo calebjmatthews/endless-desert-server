@@ -106,3 +106,4 @@ dist
 *.DS_Store
 credentials.md
 ignore/
+pm2config.json
