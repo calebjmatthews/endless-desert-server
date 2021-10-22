@@ -1,5 +1,5 @@
 const TABLE_NAMES = ['vault', 'research_status', 'buildings', 'buildings_construction',
-  'research_option_decks', 'timers', 'trading_status', 'accounts', 'leaders',
-  'equipment', 'conversation_status'];
+  'buildings_storage', 'research_option_decks', 'timers', 'trading_status', 'accounts',
+  'leaders', 'equipment', 'conversation_status'];
 
 module.exports = { TABLE_NAMES };
