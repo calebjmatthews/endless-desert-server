@@ -1,4 +1,5 @@
 const dbh = require('../db_handler').dbh;
+const messagesInsert = require('./messages').messagesInsert;
 
 const TABLE_NAMES = require('../constants').TABLE_NAMES;
 
@@ -20,18 +21,23 @@ function dataUpsert(body, userId) {
       }
     })
     TABLE_NAMES.map((tableName) => {
-      if (existsMap[tableName]) {
-        upsPromises.push(dbh.pool.query({
-          sql: ('UPDATE `' + tableName + '` SET `value` = ?, '
-            + '`timestamp` = CURRENT_TIMESTAMP() WHERE `user_id`=?'),
-          values: [JSON.stringify(body[tableName]), userId]
-        }));
+      if (tableName === 'messages') {
+        upsPromises.push(messagesInsert({ messages: body[tableName], userId }));
       }
       else {
-        upsPromises.push(dbh.pool.query({
-          sql: ('INSERT INTO `' + tableName + '`(`user_id`, `value`) VALUES (?, ?)'),
-          values: [userId, JSON.stringify(body[tableName])]
-        }));
+        if (existsMap[tableName]) {
+          upsPromises.push(dbh.pool.query({
+            sql: ('UPDATE `' + tableName + '` SET `value` = ?, '
+              + '`timestamp` = CURRENT_TIMESTAMP() WHERE `user_id`=?'),
+            values: [JSON.stringify(body[tableName]), userId]
+          }));
+        }
+        else {
+          upsPromises.push(dbh.pool.query({
+            sql: ('INSERT INTO `' + tableName + '`(`user_id`, `value`) VALUES (?, ?)'),
+            values: [userId, JSON.stringify(body[tableName])]
+          }));
+        }
       }
     });
     return Promise.all(upsPromises)
