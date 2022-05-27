@@ -2,7 +2,7 @@ const dbh = require('../db_handler').dbh;
 
 function messagesGet({userId, offset}) {
   return dbh.pool.query({
-    sql: ('SELECT `timestamp`, `text`, `type`, `icon` FROM `messages` WHERE `user_id` = ? ORDER BY `timestamp` ASC LIMIT 20 OFFSET ?'),
+    sql: ('SELECT `timestamp`, `text`, `type`, `icon` FROM `messages` WHERE `user_id` = ? ORDER BY `timestamp` DESC LIMIT 20 OFFSET ?'),
     values: [userId, offset]
   });
 }
